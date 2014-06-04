@@ -1,4 +1,4 @@
-package org.qing.study.netty.codec;
+package org.qing.study.netty.decode;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -12,9 +12,9 @@ import java.net.InetSocketAddress;
 
 /**
  * User: qgan(qgan@v5.cn)
- * Date: 14-5-29 下午5:00
+ * Date: 14-6-3 下午6:49
  */
-public class CodecClient {
+public class Client {
     public static void main(String[] args) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -32,9 +32,14 @@ public class CodecClient {
                                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
                                     ByteBuf buf = Unpooled.buffer();
-                                    buf.writeInt(8888);
-                                    buf.writeInt(9999);
-                                    ctx.writeAndFlush(buf);
+                                    for (int i = 0; i < 12; i++) {
+                                        buf.writeByte(i);
+                                    }
+                                    ByteBuf input = buf.duplicate();
+
+                                    ctx.writeAndFlush(input.readBytes(3));
+                                    Thread.sleep(1000);
+                                    ctx.writeAndFlush(input.readBytes(9));
                                 }
 
                                 @Override
